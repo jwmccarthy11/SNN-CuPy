@@ -37,7 +37,7 @@ class SynapseModule:
         self.w[neg] *= -1
 
         # axonal delays
-        self.d = cp.random.randint(d_min, d_max+1, self.n_syn, dtype=cp.int8)
+        self.d = cp.random.randint(d_min, d_max+1, self.n_syn, dtype=cp.int)
 
         # output matrix
         self.output = cp.zeros((d_max, n_post), dtype=cp.float32)
@@ -59,8 +59,11 @@ class SynapseModule:
         )
 
     def propagate(self, input: cp.ndarray, t: int) -> cp.ndarray:
+        block_size = 256
+        num_blocks = int( (self.n_syn + 255) / 256 )
+
         self.kernel(
-            (1,), (256,), (
+            (num_blocks,), (block_size,), (
                 input, t, self.n_syn, self.n_post, self.d_max,
                 self.output, self.w, self.d, self.i_pre, self.i_post
             )
