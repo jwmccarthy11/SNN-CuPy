@@ -25,7 +25,7 @@ class LIFNeuronModule(NeuronModule):
         cm:  float,     # capacitance
         rm:  float,     # resistance
     ) -> None:
-        super.__init__(n)
+        super(LIFNeuronModule, self).__init__(n)
 
         # lif state variables
         self.v = cp.ones(n, dtype=cp.float32) * res
@@ -48,4 +48,5 @@ class LIFNeuronModule(NeuronModule):
             input, self.v, self.t_ref,
             self.output, self.v, self.t_ref
         )
+
         return self.output

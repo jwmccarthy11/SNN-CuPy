@@ -1,5 +1,5 @@
 import cupy as cp
-from module.neuron_module import *
+from module.neuron import *
 from cuda.kernel import propagate_delayed
 from abc import ABC, abstractmethod
 
@@ -22,7 +22,7 @@ class SynapseModule:
         self.n_post = n_post
         self.d_max  = d_max
 
-        # global synaptic index - prevent duplicates
+        # global synaptic index -> prevent duplicates
         i_glob = cp.random.choice(
             n_pre * n_post, self.n_syn, replace=False
         ).astype(cp.int32)
@@ -49,18 +49,21 @@ class SynapseModule:
         cls,
         pre:   NeuronModule,
         post:  NeuronModule,
-        d_min: int,
-        d_max: int,
-        den:   float,
-        inh:   float
+        w_min:  float,
+        w_max:  float,
+        d_min:  int,
+        d_max:  int,
+        den:    float,
+        inh:    float
     ):
         return cls(
-            pre.n, post.n, d_min, d_max, den, inh
+            pre.n, post.n, w_min, w_max, d_min, d_max, den, inh
         )
 
-    def propagate(self, input: cp.ndarray, t: int) -> cp.ndarray:
-        block_size = 256
-        num_blocks = int( (self.n_syn + 255) / 256 )
+    def propagate(
+        self, input: cp.ndarray, t: int, block_size: int = 256
+    ) -> cp.ndarray:
+        num_blocks = int( (self.n_syn + block_size - 1) / block_size )
 
         self.kernel(
             (num_blocks,), (block_size,), (
@@ -68,3 +71,5 @@ class SynapseModule:
                 self.output, self.w, self.d, self.i_pre, self.i_post
             )
         )
+
+        return self.output[t % self.d_max, :]
