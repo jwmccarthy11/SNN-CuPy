@@ -47,8 +47,8 @@ class SynapseModule:
     @classmethod
     def connect(
         cls,
-        pre:   NeuronModule,
-        post:  NeuronModule,
+        pre:    NeuronModule,
+        post:   NeuronModule,
         w_min:  float,
         w_max:  float,
         d_min:  int,
