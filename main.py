@@ -1,6 +1,5 @@
 import time
 import numpy as np
-import cupy as cp
 import matplotlib.pyplot as plt
 from module.neuron import *
 from module.synapse import *
@@ -8,7 +7,7 @@ from module.synapse import *
 T = 1000
 
 neurons = LIFNeuronModule(
-    100, 0, -65, 4, 10, 1
+    100, -10, -65, 4, 10, 1
 )
 
 synapses = SynapseModule.connect(
@@ -33,7 +32,7 @@ for t in range(1, T):
 b = time.time() - a
 
 plt.figure(figsize=(8, 40))
-plt.imshow(spike_mat[:1000, :], cmap='binary', interpolation=None)
+plt.imshow(spike_mat[:500, :], cmap='binary', interpolation=None)
 plt.show()
 
 print(b)

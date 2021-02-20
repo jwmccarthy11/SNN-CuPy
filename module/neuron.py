@@ -50,3 +50,14 @@ class LIFNeuronModule(NeuronModule):
         )
 
         return self.output
+
+
+class BindingNeuronModule(NeuronModule):
+
+    def __init__(self, n: int, thr: int):
+        super(BindingNeuronModule, self).__init__(n)
+
+        self.thr = thr
+
+    def update(self, input: cp.ndarray) -> cp.ndarray:
+        return cp.zeros(10)

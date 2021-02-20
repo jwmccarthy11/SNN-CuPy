@@ -73,3 +73,9 @@ class SynapseModule:
         )
 
         return self.output[t % self.d_max, :]
+
+
+class BinarySynapseModule:
+
+    def __init__(self):
+        pass
